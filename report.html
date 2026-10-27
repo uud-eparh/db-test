@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тестовое задание: Базы данных и SQL</title>
+    <style>
+        :root {
+            --text-color: #333;
+            --bg-color: #fff;
+            --border-color: #ddd;
+            --code-bg: #f4f6f8;
+            --accent: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: var(--bg-color);
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            font-size: 14px;
+        }
+
+        /* Стили для печати */
+        @media print {
+            body {
+                padding: 0;
+                max-width: 100%;
+                font-size: 12pt;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+            .no-print {
+                display: none;
+            }
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+            table, pre, img, blockquote {
+                page-break-inside: avoid;
+            }
+            a {
+                text-decoration: none;
+                color: var(--text-color);
+            }
+        }
+
+        h1 {
+            color: var(--accent);
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: var(--accent);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+
+        h3 {
+            color: #444;
+            margin-top: 20px;
+        }
+
+        p {
+            margin-bottom: 10px;
+            text-align: justify;
+        }
+
+        /* Оформление кода */
+        code {
+            font-family: 'Consolas', 'Courier New', monospace;
+            background-color: var(--code-bg);
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 4px solid var(--accent);
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+
+        /* Таблицы */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        /* Скриншоты */
+        .screenshot-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .screenshot-container img {
+            max-width: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .caption {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        /* Инфо-блок */
+        .info-block {
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .info-block p {
+            margin: 5px 0;
+        }
+
+        .header-meta {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #555;
+        }
+
+        .header-meta p {
+            margin: 3px 0;
+            text-align: center;
+        }
+
+        ul, ol {
+            margin-top: 5px;
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-meta">
+        <h1>Тестовое задание: Базы данных и SQL</h1>
+        <p><strong>Кандидат:</strong> Толмачев Алексей Сергеевич</p>
+        <p><strong>Контакты:</strong> +79373988107, uud-eparh@yandex.ru, Telegram: @BodayboIO</p>
+        <p><strong>Ссылка на резюме:</strong> https://cheboksary.hh.ru/resume/ece5bfacff0fe472770039ed1f36494a38744c</p>
+        <p><strong>Дата:</strong> 26 октября 2026 г.</p>
+    </div>
+
+    <h2>Часть 1. Теория</h2>
+
+    <h3>1. Что такое СУБД и зачем она нужна, почему не хранить всё в Excel/файлах?</h3>
+    <p><strong>СУБД (Система Управления Базами Данных)</strong> — это комплекс программного обеспечения для создания, хранения, обработки и управления данными. Она обеспечивает надежность, безопасность и многопользовательский доступ.</p>
+    <p>Использование Excel или простых файлов не подходит для серьезных систем по следующим причинам:</p>
+    <ul>
+        <li><strong>Конкурентный доступ:</strong> Excel блокирует файл при открытии одним пользователем, СУБД позволяет работать сотням пользователей одновременно.</li>
+        <li><strong>Транзакции и атомарность:</strong> СУБД гарантирует, что операция выполнится либо целиком, либо не выполнится вовсе (принцип ACID). В файлах при сбое данные могут остаться в поврежденном состоянии.</li>
+        <li><strong>Целостность данных:</strong> СУБД контролирует типы данных, уникальность и связи между таблицами (через первичные и внешние ключи).</li>
+        <li><strong>Масштабируемость и производительность:</strong> СУБД используют индексы и кэширование для мгновенного поиска по миллионам записей. Excel «зависает» на десятках тысяч строк.</li>
+        <li><strong>Разграничение прав доступа:</strong> Гибкая настройка ролей (кто может читать, кто изменять).</li>
+    </ul>
+
+    <h3>2. Какие СУБД знаешь, как их можно классифицировать?</h3>
+    <p><strong>Реляционные:</strong> PostgreSQL, MySQL, Oracle Database, Microsoft SQL Server, SQLite.</p>
+    <p><strong>Документные (NoSQL):</strong> MongoDB.</p>
+    <p><strong>Ключ-значение (Key-Value):</strong> Redis, Memcached.</p>
+    <p><strong>Колоночные:</strong> ClickHouse, Vertica.</p>
+    <p>Классифицировать их можно по модели данных (реляционные, документные, графовые), по архитектуре (клиент-серверные и встраиваемые), по типу лицензии (коммерческие, open-source).</p>
+
+    <h3>3. Что такое реляционная модель?</h3>
+    <p>Это логическая модель данных, основанная на математической теории отношений (реляционной алгебре). Данные представлены в виде <strong>таблиц (отношений)</strong>, состоящих из строк (кортежей) и столбцов (атрибутов). Связи между таблицами реализуются через ключи (первичные и внешние).</p>
+
+    <h3>4. Чем первичный ключ отличается от внешнего?</h3>
+    <ul>
+        <li><strong>Первичный ключ (Primary Key, PK):</strong> уникально идентифицирует каждую строку в своей таблице. Не может содержать NULL.</li>
+        <li><strong>Внешний ключ (Foreign Key, FK):</strong> поле (или набор полей) в одной таблице, которое ссылается на первичный ключ в другой таблице. Обеспечивает ссылочную целостность (нельзя добавить запись с несуществующим ID). Может быть NULL (если связь необязательная).</li>
+    </ul>
+
+    <h3>5. Какие бывают типы связей? Как реализовать «многие ко многим»?</h3>
+    <p>Типы связей: <strong>Один к одному (1:1)</strong>, <strong>Один ко многим (1:N)</strong>, <strong>Многие ко многим (N:M)</strong>.</p>
+    <p>Связь «Многие ко многим» реализуется через <strong>промежуточную (связующую) таблицу</strong>, которая содержит внешние ключи к обеим связываемым таблицам. Часто в такой таблице создается составной первичный ключ из этих двух полей.</p>
+
+    <h3>6. Что такое нормализация и зачем она нужна?</h3>
+    <p>Нормализация — это процесс организации данных в таблицах с целью минимизации избыточности и предотвращения аномалий при вставке, обновлении и удалении данных. Основные нормальные формы:</p>
+    <ul>
+        <li><strong>1НФ:</strong> атомарность значений (нет массивов в ячейках), нет повторяющихся групп.</li>
+        <li><strong>2НФ:</strong> 1НФ + отсутствие частичной зависимости неключевых атрибутов от части составного ключа.</li>
+        <li><strong>3НФ:</strong> 2НФ + отсутствие транзитивных зависимостей (неключевые поля зависят только от ключа).</li>
+    </ul>
+
+    <h3>7. Когда денормализация оправдана?</h3>
+    <p>Денормализация (намеренное добавление избыточности) оправдана в следующих случаях:</p>
+    <ul>
+        <li>Для ускорения сложных аналитических запросов (отчеты, OLAP), где чтение преобладает над записью.</li>
+        <li>Для снижения количества JOIN-ов в высоконагруженных системах.</li>
+        <li>При кэшировании агрегированных данных (например, хранение общего баланса счета прямо в таблице клиентов).</li>
+    </ul>
+
+    <h3>8. Чем WHERE отличается от HAVING?</h3>
+    <p><code>WHERE</code> фильтрует строки <em>до</em> группировки данных. <code>HAVING</code> фильтрует сгруппированные данные <em>после</em> применения агрегатных функций (SUM, COUNT и т.д.). В одном запросе могут использоваться оба оператора.</p>
+
+    <h3>9. Какие виды JOIN знаешь?</h3>
+    <ul>
+        <li><code>INNER JOIN</code> — возвращает только совпадающие строки в обеих таблицах.</li>
+        <li><code>LEFT JOIN</code> (или LEFT OUTER JOIN) — все строки из левой таблицы + совпадения из правой (если нет — NULL).</li>
+        <li><code>RIGHT JOIN</code> — все строки из правой таблицы + совпадения из левой.</li>
+        <li><code>FULL JOIN</code> — все строки из обеих таблиц.</li>
+        <li><code>CROSS JOIN</code> — декартово произведение (все возможные комбинации строк).</li>
+    </ul>
+
+    <h3>10. Чем DELETE, TRUNCATE и DROP отличаются?</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Команда</th>
+                <th>Что делает</th>
+                <th>WHERE</th>
+                <th>Транзакции</th>
+                <th>Триггеры</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>DELETE</code></td>
+                <td>Удаляет строки (можно выборочно)</td>
+                <td>Да</td>
+                <td>Можно откатить (DML)</td>
+                <td>Срабатывают</td>
+            </tr>
+            <tr>
+                <td><code>TRUNCATE</code></td>
+                <td>Быстро очищает всю таблицу</td>
+                <td>Нет</td>
+                <td>В некоторых СУБД нельзя откатить (DDL)</td>
+                <td>Не срабатывают</td>
+            </tr>
+            <tr>
+                <td><code>DROP</code></td>
+                <td>Удаляет таблицу целиком (структуру и данные)</td>
+                <td>Нет</td>
+                <td>Нельзя откатить (DDL)</td>
+                <td>Не срабатывают</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>11. Что такое NULL и как с ним работать?</h3>
+    <p><code>NULL</code> — это специальное значение, обозначающее отсутствие данных (неизвестность). Это не ноль и не пустая строка.</p>
+    <p>Особенности работы:</p>
+    <ul>
+        <li>Любая арифметическая операция с NULL дает NULL.</li>
+        <li>Сравнение <code>NULL = NULL</code> дает NULL (не TRUE). Для проверки используют <code>IS NULL</code> или <code>IS NOT NULL</code>.</li>
+        <li>Агрегатные функции (SUM, AVG, COUNT(column)) игнорируют NULL. Исключение: <code>COUNT(*)</code> считает все строки.</li>
+        <li>Для замены NULL на значение по умолчанию используют функции <code>COALESCE()</code>, <code>IFNULL()</code>, <code>NVL()</code>.</li>
+    </ul>
+
+    <h3>12. Что такое индекс, есть ли у него минусы?</h3>
+    <p>Индекс — это структура данных (обычно B-tree), которая ускоряет поиск и сортировку строк по определенному столбцу, работая по принципу оглавления в книге.</p>
+    <p><strong>Минусы:</strong></p>
+    <ul>
+        <li>Замедляют операции вставки, обновления и удаления (так как индекс нужно перестраивать).</li>
+        <li>Занимают дополнительное место на диске.</li>
+        <li>Требуют периодического обслуживания (дефрагментации/перестроения).</li>
+    </ul>
+
+    <h3>13. Что такое транзакция?</h3>
+    <p>Транзакция — это последовательность операций с базой данных, которая выполняется как единое целое. Она должна обладать свойствами <strong>ACID</strong>:</p>
+    <ul>
+        <li><strong>Atomicity (Атомарность):</strong> всё или ничего.</li>
+        <li><strong>Consistency (Согласованность):</strong> переход из одного корректного состояния в другое.</li>
+        <li><strong>Isolation (Изолированность):</strong> параллельные транзакции не влияют друг на друга.</li>
+        <li><strong>Durability (Долговечность):</strong> результаты зафиксированной транзакции сохраняются даже при сбое.</li>
+    </ul>
+    <p>Управление осуществляется командами <code>BEGIN</code>, <code>COMMIT</code>, <code>ROLLBACK</code>.</p>
+
+    <div class="page-break"></div>
+
+    <h2>Часть 2. SQL-задачи (PostgreSQL)</h2>
+
+    <div class="info-block">
+        <p><strong>Схема БД:</strong></p>
+        <pre><code>clients      (client_id PK, full_name, city, registered_at DATE)
+accounts     (account_id PK, client_id FK, currency, opened_at DATE, closed_at DATE NULL)
+transactions (tx_id PK, account_id FK, tx_date TIMESTAMP, amount NUMERIC, tx_type)  -- tx_type: 'in' / 'out'</code></pre>
+    </div>
+
+    <h3>1. Клиенты из Новосибирска, зарегистрированные в 2025 году, по дате регистрации</h3>
+    <pre><code>SELECT client_id, full_name, city, registered_at
+FROM clients
+WHERE city = 'Новосибирск'
+  AND registered_at >= DATE '2025-01-01'
+  AND registered_at <  DATE '2026-01-01'
+ORDER BY registered_at;</code></pre>
+
+    <h3>2. Количество открытых счетов в каждой валюте</h3>
+    <pre><code>SELECT currency, COUNT(*) AS open_accounts
+FROM accounts
+WHERE closed_at IS NULL
+GROUP BY currency
+ORDER BY currency;</code></pre>
+
+    <h3>3. Имя клиента и общая сумма входящих транзакций</h3>
+    <pre><code>SELECT c.client_id, c.full_name, COALESCE(SUM(t.amount), 0) AS total_in
+FROM clients c
+JOIN accounts a ON a.client_id = c.client_id
+LEFT JOIN transactions t ON t.account_id = a.account_id AND t.tx_type = 'in'
+GROUP BY c.client_id, c.full_name
+ORDER BY total_in DESC;</code></pre>
+
+    <h3>4. Клиенты без единого счёта (анти-джойн)</h3>
+    <pre><code>SELECT c.*
+FROM clients c
+LEFT JOIN accounts a ON a.client_id = c.client_id
+WHERE a.account_id IS NULL;</code></pre>
+
+    <h3>5. Клиенты, у которых больше двух счетов (HAVING)</h3>
+    <pre><code>SELECT c.client_id, c.full_name, COUNT(a.account_id) AS accounts_cnt
+FROM clients c
+JOIN accounts a ON a.client_id = c.client_id
+GROUP BY c.client_id, c.full_name
+HAVING COUNT(a.account_id) > 2;</code></pre>
+
+    <h3>6. Поиск задвоенных транзакций (дубли)</h3>
+    <pre><code>SELECT account_id, tx_date, amount, COUNT(*) AS dup_cnt
+FROM transactions
+GROUP BY account_id, tx_date, amount
+HAVING COUNT(*) > 1
+ORDER BY dup_cnt DESC;</code></pre>
+
+    <h3>7. Со звёздочкой: Топ-3 клиентов по сумме исходящих транзакций в каждом месяце</h3>
+    <pre><code>WITH monthly AS (
+    SELECT c.client_id, c.full_name, DATE_TRUNC('month', t.tx_date) AS month, SUM(t.amount) AS out_sum
+    FROM clients c
+    JOIN accounts a ON a.client_id = c.client_id
+    JOIN transactions t ON t.account_id = a.account_id
+    WHERE t.tx_type = 'out'
+    GROUP BY c.client_id, c.full_name, DATE_TRUNC('month', t.tx_date)
+),
+ranked AS (
+    SELECT *, ROW_NUMBER() OVER (PARTITION BY month ORDER BY out_sum DESC) AS rn
+    FROM monthly
+)
+SELECT month, client_id, full_name, out_sum
+FROM ranked
+WHERE rn <= 3
+ORDER BY month, out_sum DESC;</code></pre>
+
+    <div class="page-break"></div>
+
+    <h2>Часть 3. Python: автотест подключения к БД</h2>
+    
+    <p><strong>СУБД:</strong> PostgreSQL 16 (развернута в Docker).<br>
+    <strong>Стек:</strong> Python 3.11, pytest, psycopg 3, python-dotenv.</p>
+
+    <h3>Структура проекта</h3>
+    <pre><code>db-test/
+├── docker-compose.yml
+├── requirements.txt
+├── .env
+├── conftest.py
+└── test_db.py</code></pre>
+
+    <h3>Конфигурация (docker-compose.yml и .env)</h3>
+    <p>Для тестирования развернут контейнер PostgreSQL. В файле <code>.env</code> хранятся параметры подключения (порт 6432, так как 5432 занят локальной БД).</p>
+    
+    <pre><code># docker-compose.yml
+services:
+  db:
+    image: postgres:16
+    container_name: pg_test
+    environment:
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpass
+      POSTGRES_DB: testdb
+    ports:
+      - "6432:5432"</code></pre>
+
+    <h3>conftest.py</h3>
+    <p>Фикстура для подключения к БД с явным указанием пути к <code>.env</code> и флагом <code>override=True</code> (чтобы избежать конфликтов с переменными окружения Windows).</p>
+    <pre><code>import os
+from pathlib import Path
+import pytest
+import psycopg
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path=Path(__file__).parent / ".env", override=True)
+
+def get_conn_params():
+    return dict(
+        host=os.getenv("PG_HOST", "localhost"),
+        port=int(os.getenv("PG_PORT", "6432")),
+        user=os.getenv("PG_USER", "testuser"),
+        password=os.getenv("PG_PASSWORD", "testpass"),
+        dbname=os.getenv("PG_DB", "testdb"),
+        connect_timeout=5,
+    )
+
+@pytest.fixture(scope="session")
+def db_conn():
+    with psycopg.connect(**get_conn_params()) as conn:
+        yield conn</code></pre>
+
+    <h3>test_db.py</h3>
+    <pre><code>import psycopg
+import pytest
+from conftest import get_conn_params
+
+def test_connection_ok(db_conn):
+    """Подключение установлено, SELECT 1 возвращает результат."""
+    with db_conn.cursor() as cur:
+        cur.execute("SELECT 1")
+        row = cur.fetchone()
+    assert row is not None
+    assert row[0] == 1
+
+def test_now_query(db_conn):
+    """Простейший запрос из ТЗ: select now()."""
+    with db_conn.cursor() as cur:
+        cur.execute("SELECT now()")
+        row = cur.fetchone()
+    assert row is not None
+    assert row[0] is not None
+
+def test_bad_password_fails():
+    """Негативный кейс: с неверным паролем подключение падает."""
+    bad = get_conn_params()
+    bad["password"] = "wrong_password"
+    with pytest.raises(psycopg.OperationalError):
+        with psycopg.connect(**bad):
+            pass</code></pre>
+
+    <div class="page-break"></div>
+
+    <h3>Результаты выполнения</h3>
+    
+    <p>Ниже представлены скриншоты, демонстрирующие работоспособность тестового окружения.</p>
+
+    <h4>1. Успешный прогон тестов (3 passed)</h4>
+    <p>Все три теста пройдены. Подключение к БД на порту 6432 успешно установлено, запросы выполняются корректно.</p>
+    <div class="screenshot-container">
+        <!-- Замените путь к картинке на ваш локальный файл или base64 -->
+        <img src="2026-10-26_16-33-43.png" alt="Успешный прогон 3 passed">
+        <div class="caption">Скриншот 1: Успешный запуск pytest -v</div>
+    </div>
+
+    <h4>2. Падение при неверных параметрах подключения</h4>
+    <p>Для проверки того, что тесты чувствительны к параметрам подключения, в файле <code>.env</code> был временно изменен пароль на неверный (<code>PG_PASSWORD=testpass_wrong</code>). Тесты подключения упали с ошибкой <code>psycopg.OperationalError</code>.</p>
+    <div class="screenshot-container">
+        <img src="2026-10-26_16-35-43.png" alt="Падение теста при неверном пароле">
+        <div class="caption">Скриншот 2: Ошибка подключения (password authentication failed)</div>
+    </div>
+
+    <h4>3. Возврат к рабочим настройкам</h4>
+    <p>После исправления пароля обратно на <code>testpass</code> и повторного запуска, все тесты снова проходят успешно.</p>
+    <div class="screenshot-container">
+        <img src="2026-10-26_16-36-54.png" alt="Успешный прогон после исправления">
+        <div class="caption">Скриншот 3: Финальный успешный прогон</div>
+    </div>
+
+    <br>
+    <p style="text-align: center; color: #888; font-size: 0.9em;">Конец документа.</p>
+
+</body>
+</html>
